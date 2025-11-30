@@ -1,0 +1,68 @@
+services:
+  autenticacao:
+    build:
+      context: ./microservico-autenticacao/UserService
+      dockerfile: Dockerfile
+    container_name: autenticacao
+    ports:
+      - "8001:80"
+    env_file:
+      - ./microservico-autenticacao/UserService/.env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  carrinho:
+    build:
+      context: ./microservico-carrinho
+      dockerfile: Dockerfile
+    container_name: carrinho
+    ports:
+      - "8002:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  estoque:
+    build:
+      context: ./microservico-estoque
+      dockerfile: Dockerfile
+    container_name: estoque
+    ports:
+      - "8003:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  pagamento:
+    build:
+      context: ./microservico-pagamento/OrderService
+      dockerfile: Dockerfile
+    container_name: pagamento
+    ports:
+      - "8004:80"
+    env_file:
+      - ./microservico-pagamento/.env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  vitrine:
+    build:
+      context: ./microservico-vitrine/Vitrine
+      dockerfile: Dockerfile
+    container_name: vitrine
+    ports:
+      - "8005:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+
+  frontend:
+    build:
+      context: ./frontend-app
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - autenticacao
+      - carrinho
+      - estoque
+      - pagamento
+      - vitrine
